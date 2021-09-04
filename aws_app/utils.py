@@ -79,7 +79,9 @@ def copy_to_bucket(
         'Bucket': bucket_from_name,
         'Key': file_name
     }
-    s3_resource.Object(bucket_to_name, file_name).copy(copy_source)
+    s3_resource.Object(bucket_to_name,
+                       file_name
+                       ).copy(copy_source)
 
 
 def enable_bucket_versioning(
@@ -109,8 +111,25 @@ def bucket_traversal(s3_resource) -> None:
 def print_objects(bucket) -> None:
     """
     Print all objects in bucket
-    :param bucket:
+    :param bucket: Object of bucket
     :return:
     """
     for obj in bucket.objects.all():
         print(obj.key)
+
+
+def delete_all_objects(s3_resource,
+                       bucket_name: str) -> None:
+    """
+    Deletes all objects in bucket
+    :param s3_resource: boto3 S3 resource
+    :param bucket_name: Name of bucket
+    :return:
+    """
+    res = []
+    bucket = s3_resource.Bucket(bucket_name)
+    for obj_version in bucket.object_versions.all():
+        res.append({'Key': obj_version.object_key,
+                    'VersionId': obj_version.id})
+    print(res)
+    bucket.delete_objects(Delete={'Objects': res})
