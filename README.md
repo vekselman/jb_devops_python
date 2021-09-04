@@ -21,3 +21,8 @@ On *Nix:
 $ python3 -m venv venv
 $ source venv/bin/activate
 ```
+
+## Run the main execution function
+```bash
+$ python aws_app/main.py
+```
